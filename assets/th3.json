@@ -1,0 +1,39 @@
+{"frames": {
+
+"maze4.png":
+{
+	"frame": {"x":0,"y":0,"w":640,"h":696},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":696},
+	"sourceSize": {"w":640,"h":696}
+},
+"pacman_01.png":
+{
+	"frame": {"x":640,"y":0,"w":35,"h":35},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":35},
+	"sourceSize": {"w":35,"h":35}
+},
+"pacman_02.png":
+{
+	"frame": {"x":675,"y":0,"w":35,"h":35},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":35},
+	"sourceSize": {"w":35,"h":35}
+}},
+"animations": {
+	"pacman": ["pacman_01.png","pacman_02.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "th3.png",
+	"format": "RGBA8888",
+	"size": {"w":710,"h":696},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:24f66d95eb026065f6d6ac855fcf7f1a:1ebcf8a331385af44a20034bbf1bcaf8:19e6537dcf27119c131dde7f32a12877$"
+}
+}

@@ -1,0 +1,39 @@
+{"frames": {
+
+"dungeon.png":
+{
+	"frame": {"x":0,"y":0,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"pacman_01.png":
+{
+	"frame": {"x":0,"y":512,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
+"pacman_02.png":
+{
+	"frame": {"x":50,"y":512,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+}},
+"animations": {
+	"pacman": ["pacman_01.png","pacman_02.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "th2.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":562},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:2e18d82bc6c3abfe6245adfbc5837fe1:d7f76441fd5a891f87d84951d8283314:889c373bdc86617cbba897e6b78df4f4$"
+}
+}
