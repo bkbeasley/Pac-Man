@@ -27,7 +27,7 @@ let config = {
     }   */
 };
 
-//Create a new Phaser game
+//Create a new Phaser game from the config
 const game = new Phaser.Game(config);
 
 //Declare global variables used in multiple methods
@@ -43,7 +43,7 @@ let pacman,     //Arcade physics sprite for Pac-Man
     score = 0,
     scoreText;   //Used to display the text for the score       
 
-let p2 = {x: 0, y: 0};
+let nextTileCoord = {x: 0, y: 0};
 
 const pacmanStartingTile = {x: 15, y: 23},
       blinkyStartingTile = {x: 15, y: 11};
@@ -163,8 +163,9 @@ function create() {
     //Display the score
     scoreText = this.add.text(30, 520, "Score: " + score, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
 
-    p2.x = blinky.nextTile.pixelX + 8;
-    p2.y = blinky.nextTile.pixelY + 8;
+    //Set the coordinates of Blinky's next tile
+    nextTileCoord.x = blinky.nextTile.pixelX + 8;
+    nextTileCoord.y = blinky.nextTile.pixelY + 8;
 }
 
 function update(time, delta) {
@@ -184,43 +185,55 @@ function update(time, delta) {
     }
     else if (blinky.mode == "chase") {
         blinky.targetTile = findCharacter(pacman);
-        console.log(blinky.targetTile);
     }
 
-    let distance = Phaser.Math.Distance.Between(blinky.x, blinky.y, p2.x, p2.y);
+    //Find and store the distance between Blinky and the next tile he will move to
+    let distance = Phaser.Math.Distance.Between(blinky.x, blinky.y, nextTileCoord.x, nextTileCoord.y);
 
-    if (distance > 2) {
-        
-        if (p2.x < blinky.x) {
+    //Move Blinky towards the next tile if he isn't already inside it
+    //Note: the magnitude (4) of the distance will need to increase if Blinky's speed increases 
+    if (distance > 4) {
+        //If the next tile is to the left, move Blinky left
+        if (nextTileCoord.x < blinky.x) {
             blinky.setVelocityY(0);
-            blinky.setVelocityX(-100);
+            blinky.setVelocityX(-160);
             blinky.anims.play("blinky_left", true);
             blinky.movingDirection = "left";
         }
-        else if (p2.x > blinky.x) {
+        //If the next tile is to the right, move Blinky right
+        else if (nextTileCoord.x > blinky.x) {
             blinky.setVelocityY(0);
-            blinky.setVelocityX(100);
+            blinky.setVelocityX(160);
             blinky.anims.play("blinky_right", true);
             blinky.movingDirection = "right";
         }
-        else if (p2.y < blinky.y) {
+        //If the next tile is above, move Blinky upwards
+        else if (nextTileCoord.y < blinky.y) {
             blinky.setVelocityX(0);
-            blinky.setVelocityY(-100);
+            blinky.setVelocityY(-160);
             blinky.anims.play("blinky_up", true);
             blinky.movingDirection = "up";
         }
-        else if (p2.y > blinky.y) {
+        //If the next tile is below, move Blinky downwards
+        else if (nextTileCoord.y > blinky.y) {
             blinky.setVelocityX(0);
-            blinky.setVelocityY(100);
+            blinky.setVelocityY(160);
             blinky.anims.play("blinky_down", true);
             blinky.movingDirection = "down";
         }
-
     }
+    //If Blinky is inside the next tile, stop Blinky and locate the next tile 
+    //to move to
     else {
         blinky.setVelocityX(0);
         blinky.setVelocityY(0);
-        blinky.body.reset(p2.x, p2.y);
+
+        //If the reset method isn't used Blinky will be offset from the next tile's 
+        //location by a small magnitude. This amount will continue to increase as Blinky moves
+        //from tile-to-tile
+        blinky.body.reset(nextTileCoord.x, nextTileCoord.y);
+
+        //Decide on the next tile Blinky should move to
         updateP2();
     }
     
@@ -263,7 +276,7 @@ function update(time, delta) {
 } 
 
 //This function returns the tile Pac-Man's center is currently occupying
-//Returns the x and y Tiled coordinates of the tile Pac-man is currently occupying
+//Returns: the x and y Tiled coordinates of the tile Pac-man is currently occupying
 function findCharacter(character) {
     let currentTile;
 
@@ -290,6 +303,7 @@ function findCharacter(character) {
             }
         });
 
+        //Return null if the current tile the character occupies is invalid
         if (currentTile == null) { return null };
     
         //Return the occupied tile if the tile is not equal to null
@@ -297,22 +311,9 @@ function findCharacter(character) {
     }
 }
 
-//This function looks at the next tile Pac-Man will encounter
-//in his current direction of travel, or if stationary, the 
-//next tile the player is attempting to move Pac-Man to
-//Parameters:
-//nextTile: The tile Pac-Man is attempting to move to
-//Returns true if the next tile is not a "collision" tile,
-//and false if the next tile is a "collision" tile
-function checkNextTile(nextTile) {
-    if (nextTile.properties.moveable == true) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
+//This function updates the value stored in score and updates
+//the display to reflect this
+//Args: pelletType - The type of pellet eaten by Pac-Man
 function updateScore(pelletType) {
     if (pelletType == "small") {
         score += 10;
@@ -324,26 +325,36 @@ function updateScore(pelletType) {
     }
 }
 
+//Listener method that player's updates the score depending on which type of pellet 
+//was eaten by Pac-Man
 function updatePellet() {
+    //If Pac-Man is occupying a tile with a pellet
     if (pelletLayer.getTileAt(findCharacter(pacman).x, findCharacter(pacman).y) != null) {
+        //If Pac-Man has eaten an energizer
         if (energizerLocations.some(e => e.x === findCharacter(pacman).x && e.y === findCharacter(pacman).y)) {
             updateScore("large");
         }
+        //If Pac-Man has eaten a normal pellet
         else {
             updateScore("small");
         }
 
+        //Remove the pellet after Pac-Man has eaten it
         pelletLayer.removeTileAt(findCharacter(pacman).x, findCharacter(pacman).y)
     }
 }
 
+//This function allows Pac-Man to use the "warp tiles" and travel to
+//opposite ends of the maze
 function warpCharacter(sprite) {
     if (sprite == pacman) {
+        //If Pac-Man is located at the "warp tile" on the left side of the maze
         if(findCharacter(sprite).x == 0 && findCharacter(sprite).y == 14) {
             pacman.x = mazeLayer.getTileAt(29, 14).pixelX;
             pacman.y = mazeLayer.getTileAt(29, 14).pixelY +8;
             
         }
+        //If Pac-Man is located at the "warp tile" on the right side of the maze
         else if(findCharacter(sprite).x == 29 && findCharacter(sprite).y == 14) {
             pacman.x = mazeLayer.getTileAt(1, 14).pixelX;
             pacman.y == mazeLayer.getTileAt(1, 14).pixelY;
@@ -378,10 +389,15 @@ function moveToNextTile(sprite) {
         sprite.setVelocityY(100);
         blinky.anims.play("blinky_down", true);
     }
-
 }
 
-//Find possible "decision" tiles ghosts can move to
+//This function finds the possible tiles ghosts can move to
+//after moving to the next tile in the ghost's current path.
+//There possible tiles are the four tiles adjacent to a ghost's
+//next tile.
+//Args: nextTile - The next tile the ghost will move to in its 
+//current path
+//Returns: possible tiles the ghosts can move to
 function findDecisionTiles(nextTile) {
     //The four possible "decision" tiles based on the sprite's next tile
     let tileUp = mazeLayer.getTileAt(nextTile.x, nextTile.y - 1),
@@ -389,10 +405,11 @@ function findDecisionTiles(nextTile) {
         tileRight = mazeLayer.getTileAt(nextTile.x + 1, nextTile.y),
         tileLeft = mazeLayer.getTileAt(nextTile.x - 1, nextTile.y);
 
-    //Find the current tile the ghost is on, and use it to eliminate that tile, and prevent
-    //ghost from reversing their direction
-    //let currentTile = mazeLayer.getTileAt(findCharacter(blinky).x, findCharacter(blinky).y);
+    //Stores the location of the tile that would cause the ghost to reverse direction
     let reverseTile;
+    
+    //Find the current tile the ghost is on, and use it to eliminate that tile and prevent
+    //ghosts from reversing their direction
     if (blinky.movingDirection == "left") {
         reverseTile = mazeLayer.getTileAt(nextTile.x + 1, nextTile.y);
     }
@@ -410,6 +427,8 @@ function findDecisionTiles(nextTile) {
     //eliminating invalid tiles
     let possibleTiles = [];
 
+    //Find the possible tiles ghosts can move to by elimating collision tiles
+    //and the reverse tile
     if (tileUp != reverseTile && tileUp.properties.moveable == true) {
         possibleTiles.push(tileUp);
     }
@@ -426,17 +445,22 @@ function findDecisionTiles(nextTile) {
         possibleTiles.push(tileLeft);
     }
 
+    //Possible tiles ghosts can move to after eliminating collision tiles, and
+    //the reverse tile 
     return possibleTiles;
 }
 
-//Calculates the straight line distance in pixels from a start tile to a
-//target tile.
-function distanceToTarget(startTile, targetTile) {
+//Calculates the straight line distance in pixels from a start tile to a target tile,
+//Args: decisionTile - a possible tile the ghost can move to
+//      targetTile - the ghost's target tile
+//Returns: the distance between the two tiles
+function distanceToTarget(decisionTile, targetTile) {
+    //Stores the distance between the two tiles
     let distance;
 
-    //Distance between two points (A,B):
+    //Calculate the distance between two points (A,B):
     // d(A,B) = sqrt((xB - xA)^2 + (yB - yA)^2)
-    distance = Phaser.Math.Distance.Between(startTile.x + 8, startTile.y + 8, targetTile.x + 8, targetTile.y + 8); 
+    distance = Phaser.Math.Distance.Between(decisionTile.x + 8, decisionTile.y + 8, targetTile.x + 8, targetTile.y + 8); 
 
     return distance;
 }
@@ -444,6 +468,7 @@ function distanceToTarget(startTile, targetTile) {
 //This function takes an array of possible "decision" tiles and a target tile as parameters,
 //and returns the "decision" tile with the shortest distance to the target tile
 function shortestDistanceTile(decisionTiles, targetTile) {
+    //Stores the current shortest distance to the target
     let lowestValue = null;
     
     //Calculate distance to target tile for each decision tile
@@ -471,25 +496,37 @@ function shortestDistanceTile(decisionTiles, targetTile) {
     //Note: Distance tiebreaker not added, but should still function w/o this feature
 }
 
-function moveToTarget(ghost) {
+//This method uses helper functions to find possible tiles ghosts can move to, and chooses the
+//tile closest to the target tile. The method will then update their next tiles to the chosen tile.
+//Args: ghost - the current ghost
+function updateNextTile(ghost) {
+    //Store the next tile and target tile
     let nextTile = ghost.nextTile;
     let targetTile = ghost.targetTile;
 
+    //Find and store possible tiles
     let decisionTile = findDecisionTiles(nextTile);
 
+    //If there is more than one possible tile, choose the tile closest to the target tile
     if (decisionTile.length > 1) {
         decisionTile = shortestDistanceTile(decisionTile, targetTile);
     }
+    //If there is only one possible tile 
     else {
         decisionTile = decisionTile[0];
     }
 
+    //Update the next tile property to the best choice decision tile
     ghost.nextTile = decisionTile;
 }
 
+//This method updates the next tile in the properties of ghosts as well 
+//as the coordinates of the next tile
 function updateP2() {
-    moveToTarget(blinky);
+    //Update blinky's next tile property
+    updateNextTile(blinky);
 
-    p2.x = blinky.nextTile.pixelX + 8;
-    p2.y = blinky.nextTile.pixelY + 8;
+    //Update the coordinates of the next tile
+    nextTileCoord.x = blinky.nextTile.pixelX + 8;
+    nextTileCoord.y = blinky.nextTile.pixelY + 8;
 }
