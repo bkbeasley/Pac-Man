@@ -1,35 +1,27 @@
 "use strict";
 
+import MazeScene from "./maze_scene.js";
+
 //Set up and configure the application
 let config = {
     type: Phaser.AUTO,
     width: 900,
     height: 900,
     zoom: 1.5,
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    },
+    scene: MazeScene,
     physics: {
         default: "arcade",
         arcade: {
             gravity: { y: 0 },
             debug: false
         }
-    },
-    /* scale: {
-        parent: "container",
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 700,
-        height: 900
-    }   */
+    }
 };
 
 //Create a new Phaser game from the config
 const game = new Phaser.Game(config);
 
+/*
 //Declare global variables used in multiple methods
 let pacman,     //Arcade physics sprite for Pac-Man
     blinky,     //Acrade physics sprite for Blinky
@@ -127,6 +119,8 @@ function create() {
         collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
         faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
     });  */
+
+    /*
 
     //Collision for Pac-Man and the "non-moveable" tiles
     this.physics.add.collider(pacman, mazeLayer);
@@ -529,4 +523,4 @@ function updateP2() {
     //Update the coordinates of the next tile
     nextTileCoord.x = blinky.nextTile.pixelX + 8;
     nextTileCoord.y = blinky.nextTile.pixelY + 8;
-}
+} */
