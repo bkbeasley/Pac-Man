@@ -1,8 +1,10 @@
 "use strict";
 
 import PacMan from "./pacman.js";
-import Ghost from "./ghost.js";
 import Blinky from "./blinky.js";
+import Pinky from "./pinky.js";
+import Inky from "./inky.js";
+import Clyde from "./clyde.js";
 
 //Declare global variables used in multiple methods
 let blinky, //Acrade physics sprite for Blinky
@@ -40,6 +42,9 @@ export default class MazeScene extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", "./assets/maze_tile_map.json");
         this.load.atlas("pacman", "./assets/sprites/pacman/pac_anims.png", "./assets/sprites/pacman/pac_anims.json");
         this.load.atlas("blinky", "./assets/sprites/blinky/blinky_anims.png", "./assets/sprites/blinky/blinky_anims.json");
+        this.load.atlas("pinky", "./assets/sprites/pinky/pinky_anims.png", "./assets/sprites/pinky/pinky_anims.json");
+        this.load.atlas("inky", "./assets/sprites/inky/inky_anims.png", "./assets/sprites/inky/inky_anims.json");
+        this.load.atlas("clyde", "./assets/sprites/clyde/clyde_anims.png", "./assets/sprites/clyde/clyde_anims.json");
     }
 
     create() {
@@ -74,14 +79,24 @@ export default class MazeScene extends Phaser.Scene {
         this.pacman.sprite.setCollideWorldBounds(true); 
 
         //Find and store Blinky's starting location
-        const blinkyStartX = mazeLayer.getTileAt(15,11).pixelX + 8,
-              blinkyStartY = mazeLayer.getTileAt(15,11).pixelY + 8;
+        const blinkyStartX = mazeLayer.getTileAt(15, 11).pixelX + 8,
+              blinkyStartY = mazeLayer.getTileAt(15, 11).pixelY + 8;
+
+        const pinkyStartX = mazeLayer.getTileAt(15, 11).pixelX + 8,
+              pinkyStartY = mazeLayer.getTileAt(15, 11).pixelY + 8;
+
+        const inkyStartX = mazeLayer.getTileAt(15, 11).pixelX + 8,
+              inkyStartY = mazeLayer.getTileAt(15, 11).pixelY + 8;
+
+        const clydeStartX = mazeLayer.getTileAt(15, 11).pixelX + 8,
+              clydeStartY = mazeLayer.getTileAt(15, 11).pixelY + 8;
 
         //Instantiate Blinky at the starting location
-        //this.blinky = new Ghost(this, mazeLayer, blinkyStartX, blinkyStartY);
-
         this.blinky = new Blinky(this, mazeLayer, blinkyStartX, blinkyStartY);
-
+        this.pinky = new Pinky(this, mazeLayer, pinkyStartX, pinkyStartY);
+        this.inky = new Inky(this, mazeLayer, inkyStartX, inkyStartY);
+        this.clyde = new Clyde(this, mazeLayer, clydeStartX, clydeStartY);
+        
         //Used for testing purposes, for an easy way of looking
         //at all of the tiles in the layer map
         tiles = map.layers[0].data;
@@ -103,7 +118,6 @@ export default class MazeScene extends Phaser.Scene {
 
         //Display the score
         scoreText = this.add.text(30, 520, "Score: " + score, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
-
     }
 
     //This function returns the tile Pac-Man's center is currently occupying
@@ -197,6 +211,9 @@ export default class MazeScene extends Phaser.Scene {
         //Update Pac-Man
         this.pacman.update();
 
+        //this.hide(this.blinky);
+        //this.hide(this.pinky);
+
         //Allows Pac-Man to use the 2 warp tiles
         this.warpCharacter(this.pacman);
 
@@ -213,8 +230,41 @@ export default class MazeScene extends Phaser.Scene {
             this.blinky.chase(this.findCharacter(this.pacman.sprite));
         }
 
-        //this.blinky.update();
+        this.pinky.setMode("chase");
+
+        if (this.pinky.mode == "scatter") {
+            this.pinky.setTargetTile(this.pinky.scatterTile);
+        }
+        else if (this.pinky.mode == "chase") {
+            this.pinky.chase(this.findCharacter(this.pacman.sprite), this.pacman.movingDirection);
+        }
+
+        this.inky.setMode("chase");
+
+        if (this.inky.mode == "scatter") {
+            this.inky.setTargetTile(this.inky.scatterTile);
+        }
+        else if (this.inky.mode == "chase") {
+            this.inky.chase(this.findCharacter(this.pacman.sprite), this.pacman.movingDirection, mazeLayer.getTileAtWorldXY(this.blinky.sprite.x, this.blinky.sprite.y));
+        }
+
+        this.clyde.setMode("chase");
+
+        if (this.clyde.mode == "scatter") {
+            this.clyde.setTargetTile(this.clyde.scatterTile);
+        }
+        else if (this.clyde.mode == "chase") {
+            this.clyde.chase(this.findCharacter(this.pacman.sprite));
+        }
+
         this.blinky.update();
-    } 
+        this.pinky.update();
+        this.inky.update();
+        this.clyde.update();   
+    }
+    
+    hide(character) {
+        character.sprite.setVisible(0);
+    }
 
 }

@@ -5,8 +5,6 @@ export default class Ghost {
 
         //Create the Arcade physics sprite for a Ghost
         this.sprite = null; 
-                                                                                  
-        const anims = scene.anims;
 
         //Set the properties of the Ghost
         this.mode = null;
@@ -16,6 +14,9 @@ export default class Ghost {
         this.movingDirection = null;
         this.nextTileCoord = {x: null, y: null};
         this.scatterTile = null;
+        this.warpTileLeft = this.maze.getTileAt(0, 14);
+        this.warpTileRight = this.maze.getTileAt(29, 14);
+        this.currentTile = null;
     }
 
     update() {
@@ -29,28 +30,28 @@ export default class Ghost {
             if (this.nextTileCoord.x < this.sprite.x) {
                 this.sprite.setVelocityY(0);
                 this.sprite.setVelocityX(-160);
-                this.sprite.anims.play("left", true);
+                this.animate("left");
                 this.movingDirection = "left";
             }
             //If the next tile is to the right, move the Ghost right
             else if (this.nextTileCoord.x > this.sprite.x) {
                 this.sprite.setVelocityY(0);
                 this.sprite.setVelocityX(160);
-                this.sprite.anims.play("right", true);
+                this.animate("right");
                 this.movingDirection = "right";
             }
             //If the next tile is above, move the Ghost upwards
             else if (this.nextTileCoord.y < this.sprite.y) {
                 this.sprite.setVelocityX(0);
                 this.sprite.setVelocityY(-160);
-                this.sprite.anims.play("up", true);
+                this.animate("up");
                 this.movingDirection = "up";
             }
             //If the next tile is below, move the Ghost downwards
             else if (this.nextTileCoord.y > this.sprite.y) {
                 this.sprite.setVelocityX(0);
                 this.sprite.setVelocityY(160);
-                this.sprite.anims.play("down", true);
+                this.animate("down");
                 this.movingDirection = "down";
             }
         }
@@ -67,6 +68,8 @@ export default class Ghost {
 
             //Decide on the next tile the Ghost should move to
             this.updateNextTileCoords();
+
+            this.currentTile = this.maze.getTileAtWorldXY(this.sprite.x, this.sprite.y);
         }
 
     }
@@ -201,8 +204,25 @@ export default class Ghost {
         let nextTile = ghost.nextTile;
         let targetTile = ghost.targetTile;
 
+        //Stores possible tiles
+        let decisionTile;
+
+        //If the nextTile is a warp tile, warp the Ghost
+        if (nextTile == this.warpTileLeft) {
+            this.sprite.x = this.warpTileRight.pixelX;
+            this.sprite.y = this.warpTileRight.pixelY +8;
+            ghost.nextTile = this.maze.getTileAt(28, 14);
+            return;
+        }
+        else if (nextTile == this.warpTileRight) {
+            this.sprite.x = this.warpTileLeft.pixelX;
+            this.sprite.y = this.warpTileLeft.pixelY + 8;
+            ghost.nextTile = this.maze.getTileAt(1, 14);
+            return;
+        }
+
         //Find and store possible tiles
-        let decisionTile = this.findDecisionTiles(nextTile);
+        decisionTile = this.findDecisionTiles(nextTile);
 
         //If there is more than one possible tile, choose the tile closest to the target tile
         if (decisionTile.length > 1) {
@@ -228,10 +248,8 @@ export default class Ghost {
         this.nextTileCoord.y = this.nextTile.pixelY + 8;
     }
 
-    chase(pacmanTile) {
-        
+    animate(direction) {}
 
-    }
-
+    chase(pacmanTile) {}
  
 }
