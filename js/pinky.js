@@ -24,13 +24,22 @@ export default class Pinky extends Ghost {
 
         //Set pinky's initial next tile and target tile
         this.targetTile = this.maze.getTileAt(13, 26);
-        this.nextTile = this.maze.getTileAt(14, 11);
+        this.nextTile = this.maze.getTileAt(14, 13);
 
         //Set the coordinates of pinky's next tile
         this.nextTileCoord.x = this.nextTile.pixelX + 8;
         this.nextTileCoord.y = this.nextTile.pixelY + 8;
 
         this.scatterTile = this.maze.getTileAt(4, 0);
+
+        this.pelletLimit = 0;
+        this.mode = "exit";
+
+        this.distance = 0;
+        this.idleStarted = false;
+        this.moveNeutralUp = false;
+        this.isInside = true;
+        this.exitStarted = false;
     }
 
     chase(pacmanTile, movingDirection) {
@@ -87,6 +96,38 @@ export default class Pinky extends Ghost {
         }
         else if (direction == "down") {
             this.sprite.anims.play("pinky_down", true);
+        }
+    }
+
+    exitHouse() {
+        if (this.exitStarted == false) {
+            this.distance = 0;
+            this.exitStarted = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y -= 1;
+            this.animate("up");
+            this.distance += 1;
+        }
+
+        if (this.distance >= 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+            this.nextTile = this.maze.getTileAt(14, 11);
+            this.nextTileCoord.x = this.nextTile.pixelX + 8;
+            this.nextTileCoord.y = this.nextTile.pixelY + 8;
+            this.isInside = false;
+            this.setMode("scatter");
+        }
+        
+    }
+
+    checkHeight() {
+        if (this.sprite.y > this.maze.getTileAt(15, 11).pixelY + 8) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+        }
+        else {
+            this.setMode("scatter");
         }
     }
 

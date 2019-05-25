@@ -23,14 +23,24 @@ export default class Inky extends Ghost {
         anims.create({ key: "inky_up", frames: inkyUpFrames, frameRate: 17, repeat: -1 });
 
         //Set inky's initial next tile and target tile
-        this.targetTile = this.maze.getTileAt(13, 26);
-        this.nextTile = this.maze.getTileAt(14, 11);
+        this.targetTile = this.maze.getTileAt(14, 11);
+        this.nextTile = this.maze.getTileAt(14, 14);
 
         //Set the coordinates of inky's next tile
         this.nextTileCoord.x = this.nextTile.pixelX + 8;
         this.nextTileCoord.y = this.nextTile.pixelY + 8;
 
         this.scatterTile = this.maze.getTileAt(28, 30);
+
+        this.pelletLimit = 30;
+
+        this.distance = 0;
+        this.idleStarted = false;
+        this.moveNeutralUp = false;
+        this.exitStarted = false;
+        this.isInside = true;
+
+        this.mode = "idle";    
     }
 
     chase(pacmanTile, movingDirection, blinkyTile) {
@@ -241,6 +251,93 @@ export default class Inky extends Ghost {
         }
         else {
             throw new Error("The current tile is already in bounds.");
+        }
+    }
+
+    playIdleAnimation() {
+        if (this.idleStarted != true) {
+            this.distance = 0;
+            this.idleStarted = true;
+        }
+
+        if (this.moveNeutralUp == true) {
+            if (this.distance < 12) {
+                this.sprite.y -= 1;
+                this.distance += 1;
+                this.animate("up");
+            }
+            else {
+                this.distance = 0;
+                this.moveNeutralUp = false;
+            }
+        
+        }
+
+        if (this.distance < 12) {
+            this.sprite.y -= 1;
+            this.distance += 1;
+            this.animate("up");
+        }
+        else if (this.distance >= 12) {
+            this.sprite.y += 1;
+            this.distance += 1;
+            this.animate("down");
+
+            if (this.distance == 36) {
+                this.distance = 0;
+                this.moveNeutralUp = true;
+            }
+        }
+
+    }
+
+    exitHouse() {
+        if (this.exitStarted == false) {
+            this.distance = 0;
+            this.exitStarted = true;
+        }
+
+        if (this.distance < 32) {
+            this.sprite.x += 1;
+            this.animate("right");
+            this.distance += 1;
+        }
+        else {
+            if (this.distance > 80) {
+                this.nextTile = this.maze.getTileAt(14, 11);
+                this.nextTileCoord.x = this.nextTile.pixelX + 8;
+                this.nextTileCoord.y = this.nextTile.pixelY + 8;
+                this.isInside = false;
+
+                //this.setMode("scatter");
+                this.checkHeight();
+            }
+            if (this.distance >= 32) {
+                this.sprite.y -= 1;
+                this.distance += 1
+                this.animate("up");
+                
+                if (this.sprite.y == this.maze.getTileAt(15, 11).pixelY + 8) {
+                    
+                    this.nextTile = this.maze.getTileAt(14, 11);
+                    this.nextTileCoord.x = this.nextTile.pixelX + 8;
+                    this.nextTileCoord.y = this.nextTile.pixelY + 8;
+                    this.isInside = false;
+
+                    this.checkHeight();
+//                    this.setMode("scatter");
+                }
+            } 
+        }
+
+    }
+
+    checkHeight() {
+        if (this.sprite.y > this.maze.getTileAt(15, 11).pixelY + 8) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+        }
+        else {
+            this.setMode("scatter");
         }
     }
 

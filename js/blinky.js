@@ -31,6 +31,10 @@ export default class Blinky extends Ghost {
         this.nextTileCoord.y = this.nextTile.pixelY + 8;
 
         this.scatterTile = this.maze.getTileAt(25, 0);
+
+        this.pelletLimit = 0;
+
+        this.mode = "scatter";
     }
 
     chase(pacmanTile) {

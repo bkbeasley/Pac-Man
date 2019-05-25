@@ -8,8 +8,8 @@ export default class Ghost {
 
         //Set the properties of the Ghost
         this.mode = null;
-        this.targetTIle = null;
-        this.nextTIle = null;
+        this.targetTile = null;
+        this.nextTile = null;
         this.decisionTile = null;
         this.movingDirection = null;
         this.nextTileCoord = {x: null, y: null};
@@ -17,9 +17,18 @@ export default class Ghost {
         this.warpTileLeft = this.maze.getTileAt(0, 14);
         this.warpTileRight = this.maze.getTileAt(29, 14);
         this.currentTile = null;
+        this.pelletLimit = null;
+        this.speed = null;
+        this.isInside = null;
     }
 
     update() {
+        if (this.mode == "exit") {
+            this.exitHouse();
+        }
+
+        if (this.mode != "idle" && this.mode != "exit"){
+            
         //Find and store the distance between the Ghost and the next tile it will move to
         let distance = Phaser.Math.Distance.Between(this.sprite.x, this.sprite.y, this.nextTileCoord.x, this.nextTileCoord.y);
 
@@ -29,28 +38,28 @@ export default class Ghost {
             //If the next tile is to the left, move the Ghost left
             if (this.nextTileCoord.x < this.sprite.x) {
                 this.sprite.setVelocityY(0);
-                this.sprite.setVelocityX(-160);
+                this.sprite.setVelocityX(-this.speed);
                 this.animate("left");
                 this.movingDirection = "left";
             }
             //If the next tile is to the right, move the Ghost right
             else if (this.nextTileCoord.x > this.sprite.x) {
                 this.sprite.setVelocityY(0);
-                this.sprite.setVelocityX(160);
+                this.sprite.setVelocityX(this.speed);
                 this.animate("right");
                 this.movingDirection = "right";
             }
             //If the next tile is above, move the Ghost upwards
             else if (this.nextTileCoord.y < this.sprite.y) {
                 this.sprite.setVelocityX(0);
-                this.sprite.setVelocityY(-160);
+                this.sprite.setVelocityY(-this.speed);
                 this.animate("up");
                 this.movingDirection = "up";
             }
             //If the next tile is below, move the Ghost downwards
             else if (this.nextTileCoord.y > this.sprite.y) {
                 this.sprite.setVelocityX(0);
-                this.sprite.setVelocityY(160);
+                this.sprite.setVelocityY(this.speed);
                 this.animate("down");
                 this.movingDirection = "down";
             }
@@ -71,6 +80,10 @@ export default class Ghost {
 
             this.currentTile = this.maze.getTileAtWorldXY(this.sprite.x, this.sprite.y);
         }
+    }
+    else if (this.mode == "idle"){
+        this.playIdleAnimation();
+    }
 
     }
 
@@ -88,6 +101,12 @@ export default class Ghost {
         }
         else if (mode == "scatter") {
             this.mode = "scatter";
+        }
+        else if (mode == "exit") {
+            this.mode = "exit";
+        }
+        else if (mode == "idle") {
+            this.mode = "idle";
         }
     }
 
@@ -251,5 +270,9 @@ export default class Ghost {
     animate(direction) {}
 
     chase(pacmanTile) {}
+
+    playIdleAnimation() {}
+
+    exitHouse() {}
  
 }

@@ -35,6 +35,16 @@ export default class Clyde extends Ghost {
         //The minimum distance Clyde can be away from Pac-Man before switching to scatter mode
         //Clyde must be 8 tiles (8 x 16 pixels) away from Pac-Man to stay in chase mode
         this.minDistance = 176;
+
+        this.pelletLimit = 60;
+
+        this.mode = "idle";
+
+        this.distance = 0;
+        this.idleStarted = false;
+        this.moveNeutralUp = false;
+        this.isInside = true;
+        this.exitStarted = false;
     }
 
     chase(pacmanTile) {
@@ -65,6 +75,92 @@ export default class Clyde extends Ghost {
         }
         else if (direction == "down") {
             this.sprite.anims.play("clyde_down", true);
+        }
+    }
+
+    playIdleAnimation() {
+        if (this.idleStarted != true) {
+            this.distance = 0;
+            this.idleStarted = true;
+        }
+
+        if (this.moveNeutralUp == true) {
+            if (this.distance < 12) {
+                this.sprite.y -= 1;
+                this.distance += 1;
+                this.animate("up");
+            }
+            else {
+                this.distance = 0;
+                this.moveNeutralUp = false;
+            }
+        }
+
+        if (this.distance < 12) {
+            this.sprite.y -= 1;
+            this.distance += 1;
+            this.animate("up");
+        }
+        else if (this.distance >= 12) {
+            this.sprite.y += 1;
+            this.distance += 1;
+            this.animate("down");
+
+            if (this.distance == 36) {
+                this.distance = 0;
+                this.moveNeutralUp = true;
+            }
+        }
+
+    }
+
+    exitHouse() {
+        if (this.exitStarted == false) {
+            this.distance = 0;
+            this.exitStarted = true;
+        }
+//        console.log(this.maze.getTileAtWorldXY(this.sprite.x, this.sprite.y));
+        if (this.distance < 32) {
+            this.sprite.x -= 1;
+            this.animate("left");
+            this.distance += 1;
+        }
+        else {
+            if (this.distance > 80) {
+                this.nextTile = this.maze.getTileAt(14, 11);
+                this.nextTileCoord.x = this.nextTile.pixelX + 8;
+                this.nextTileCoord.y = this.nextTile.pixelY + 8;
+                this.isInside = false;
+
+                //this.setMode("scatter");
+                this.checkHeight();
+            }
+            if (this.distance >= 32) {
+                this.sprite.y -= 1;
+                this.distance += 1
+                this.animate("up");
+                
+                if (this.sprite.y == this.maze.getTileAt(15, 11).pixelY + 8) {
+                    
+                    this.nextTile = this.maze.getTileAt(14, 11);
+                    this.nextTileCoord.x = this.nextTile.pixelX + 8;
+                    this.nextTileCoord.y = this.nextTile.pixelY + 8;
+                    this.isInside = false;
+
+                    this.checkHeight();
+//                  this.setMode("scatter");
+                }
+            } 
+        }
+
+    }
+
+    checkHeight() {
+        if (this.sprite.y > this.maze.getTileAt(15, 11).pixelY + 8) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+        }
+        else {
+            this.setMode("scatter");
         }
     }
 
