@@ -28,6 +28,14 @@ export default class PacMan {
         this.maxSpeed = 200;
         this.speed = .8 * this.maxSpeed;
         this.sprite.setVelocityX(-this.speed);
+
+        this.center = { x: this.sprite.x + 8, y: this.sprite.y + 8 };
+        this.lives = 3;
+
+        this.placeHolderVelocityX;
+        this.placeHolderVelocityY;
+
+        this.mode;
     }
 
     currentTile() {
@@ -49,13 +57,25 @@ export default class PacMan {
     }
 
     update() {
+        
+        if (this.mode == "frozen") {
+            this.sprite.setVelocityX(0);
+            this.sprite.setVelocityY(0);
+            this.sprite.anims.stop();
+            return;
+        }
+
         this.sprite.anims.play("chomp", true);
+
+        if (this.sprite.body.velocity.x == 0 && this.sprite.body.velocity.y == 0) {
+            this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[2]);
+        }
 
         //The if/else statements below occur when the player
         //uses the arrow keys to move Pac-Man 
 
         //If the right arrow key is pressed
-        if (this.keys.right.isDown) {
+        if (this.keys.right.isDown && !this.keys.up.isDown && !this.keys.down.isDown) {
             this.sprite.setVelocityX(this.speed);
             this.movingDirection = "right";
 
@@ -64,7 +84,7 @@ export default class PacMan {
             }
         }
         //If the left arrow key is pressed
-        if (this.keys.left.isDown) {
+        if (this.keys.left.isDown && !this.keys.up.isDown && !this.keys.down.isDown) {
             this.sprite.setVelocityX(-this.speed);
             this.movingDirection = "left";
 
@@ -90,8 +110,10 @@ export default class PacMan {
                 this.sprite.setRotation(1.57);
             }
         }
-
+        this.center.x = this.sprite.x + 8;
+        this.center.y = this.sprite.y + 8;
     }
+
 
     
 }

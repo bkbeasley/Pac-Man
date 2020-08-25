@@ -5,7 +5,7 @@ export default class Blinky extends Ghost {
         super(scene, maze, positionX, positionY);
 
         //Create the Arcade physics sprite for Blinky
-        this.sprite = scene.physics.add.sprite(positionX, positionY, "blinky", "blinky_01.png")
+        this.sprite = scene.physics.add.sprite(positionX, positionY, "blinky", "blinky_01.png");
                               
         const anims = scene.anims;
 
@@ -35,6 +35,15 @@ export default class Blinky extends Ghost {
         this.pelletLimit = 0;
 
         this.mode = "scatter";
+
+        this.elroyOneStarted = false;
+        this.elroyTwoStarted = false;
+
+        this.isInside = false;
+        this.enterStarted = false;
+        this.distance = 0;
+        this.exitStarted = false;
+        this.enterStarted = false;
     }
 
     chase(pacmanTile) {
@@ -54,6 +63,73 @@ export default class Blinky extends Ghost {
         else if (direction == "down") {
             this.sprite.anims.play("blinky_down", true);
         }
+    }
+
+    exitHouse() {
+        if (this.exitStarted == false) {
+            this.distance = 0;
+            this.exitStarted = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y -= 1;
+            this.animate("up");
+            this.distance += 1;
+        }
+
+        if (this.distance >= 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+            this.nextTile = this.maze.getTileAt(14, 11);
+            this.nextTileCoord.x = this.nextTile.pixelX + 8;
+            this.nextTileCoord.y = this.nextTile.pixelY + 8;
+            this.isInside = false;
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
+        }
+        
+    }
+
+    checkHeight() {
+        if (this.sprite.y > this.maze.getTileAt(15, 11).pixelY + 8) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
+        }
+        else {
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
+        }
+    }
+
+    enterHouse() {
+        if (this.enterStarted == false) {
+            this.distance = 0;
+            this.enterStarted = true;
+            this.isInside = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y += 1;
+            this.animate("down");
+            this.distance += 1;
+        }
+
+        if (this.distance >= 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 14).pixelX, this.maze.getTileAt(15, 14).pixelY + 8);
+            this.distance = 0;
+            this.enterStarted = false;
+            this.setMode("exit");
+        } 
+    }
+
+    reset() {
+        this.animate("left");
     }
 
 }

@@ -45,6 +45,7 @@ export default class Clyde extends Ghost {
         this.moveNeutralUp = false;
         this.isInside = true;
         this.exitStarted = false;
+        this.enterStarted = false;
     }
 
     chase(pacmanTile) {
@@ -148,11 +149,9 @@ export default class Clyde extends Ghost {
                     this.isInside = false;
 
                     this.checkHeight();
-//                  this.setMode("scatter");
                 }
             } 
         }
-
     }
 
     checkHeight() {
@@ -160,8 +159,49 @@ export default class Clyde extends Ghost {
             this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
         }
         else {
-            this.setMode("scatter");
+            this.distance = 0;
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
         }
+    }
+
+    enterHouse() {
+        if (this.enterStarted == false) {
+            this.distance = 0;
+            this.enterStarted = true;
+            this.isInside = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y += 1;
+            this.animate("down");
+            this.distance += 1;
+        }
+
+        if (this.distance == 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 14).pixelX, this.maze.getTileAt(15, 14).pixelY + 8);
+            this.distance += 1;
+        }
+        
+        if (this.distance > 48) {
+            if (this.distance <= 80) {
+                this.sprite.x += 1;
+                this.animate("right");
+                this.distance += 1;
+            }
+            else {
+                this.distance = 0;
+                this.setMode("exit");
+            }
+        }
+    }
+
+    reset() {
+        this.animate("up");
     }
 
 }

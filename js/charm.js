@@ -135,7 +135,6 @@ function update(time, delta) {
         //If the next tile is not moveable
         else {
             pacman.body.setVelocityX(0);
-            console.log("DUDDU");
         }
 
         

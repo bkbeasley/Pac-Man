@@ -1,0 +1,84 @@
+{"frames": [
+
+{
+	"filename": "death_01.png",
+	"frame": {"x":0,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_02.png",
+	"frame": {"x":26,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_03.png",
+	"frame": {"x":52,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_04.png",
+	"frame": {"x":78,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_05.png",
+	"frame": {"x":104,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_06.png",
+	"frame": {"x":130,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_07.png",
+	"frame": {"x":156,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_08.png",
+	"frame": {"x":182,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "death_09.png",
+	"frame": {"x":208,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "death_anims.png",
+	"format": "RGBA8888",
+	"size": {"w":234,"h":26},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1961ba2f852099ea13e271f8cad2cf78:fcc304ae9fa48faa2959b1b46239ea49:2f6e8492b05ac8e58421a396bad6d156$"
+}
+}

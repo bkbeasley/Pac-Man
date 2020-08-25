@@ -40,6 +40,7 @@ export default class Pinky extends Ghost {
         this.moveNeutralUp = false;
         this.isInside = true;
         this.exitStarted = false;
+        this.enterStarted = false;
     }
 
     chase(pacmanTile, movingDirection) {
@@ -95,7 +96,11 @@ export default class Pinky extends Ghost {
             this.sprite.anims.play("pinky_up", true);
         }
         else if (direction == "down") {
-            this.sprite.anims.play("pinky_down", true);
+            //An if statement is needed in order to reset Pinky's eyes when the 
+            //ReadyScene is called
+            if (this.sprite.anims != undefined) {
+                this.sprite.anims.play("pinky_down", true);
+            }
         }
     }
 
@@ -117,7 +122,12 @@ export default class Pinky extends Ghost {
             this.nextTileCoord.x = this.nextTile.pixelX + 8;
             this.nextTileCoord.y = this.nextTile.pixelY + 8;
             this.isInside = false;
-            this.setMode("scatter");
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
         }
         
     }
@@ -127,8 +137,38 @@ export default class Pinky extends Ghost {
             this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
         }
         else {
-            this.setMode("scatter");
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
         }
+    }
+
+    enterHouse() {
+        if (this.enterStarted == false) {
+            this.distance = 0;
+            this.enterStarted = true;
+            this.isInside = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y += 1;
+            this.animate("down");
+            this.distance += 1;
+        }
+
+        if (this.distance >= 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 14).pixelX, this.maze.getTileAt(15, 14).pixelY + 8);
+            this.distance = 0;
+            this.enterStarted = false;
+            this.setMode("exit");
+        } 
+    }
+
+    reset() {
+        this.animate("down");
     }
 
 }

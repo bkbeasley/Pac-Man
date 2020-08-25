@@ -40,7 +40,8 @@ export default class Inky extends Ghost {
         this.exitStarted = false;
         this.isInside = true;
 
-        this.mode = "idle";    
+        this.mode = "idle"; 
+        this.enterStarted = false;   
     }
 
     chase(pacmanTile, movingDirection, blinkyTile) {
@@ -115,7 +116,7 @@ export default class Inky extends Ghost {
             offsetTile = this.maze.getTileAt(pacmanTile.x, pacmanTile.y - offset);
 
             if (offsetTile == null) {
-                offsetTile = this.maze.getTileAt(pacmanTile.x, 0);
+                offsetTile = this.maze.getTileAt(pacmanTile.x, pacmanTile.y);
             }
 
             distanceX = offsetTile.x - blinkyTile.x;
@@ -146,7 +147,7 @@ export default class Inky extends Ghost {
             offsetTile = this.maze.getTileAt(pacmanTile.x, pacmanTile.y + offset);
 
             if (offsetTile == null) {
-                offsetTile = this.maze.getTileAt(pacmanTile.x, 30);
+                offsetTile = this.maze.getTileAt(pacmanTile.x, pacmanTile.y);
             }
 
             distanceX = offsetTile.x - blinkyTile.x;
@@ -318,14 +319,12 @@ export default class Inky extends Ghost {
                 this.animate("up");
                 
                 if (this.sprite.y == this.maze.getTileAt(15, 11).pixelY + 8) {
-                    
                     this.nextTile = this.maze.getTileAt(14, 11);
                     this.nextTileCoord.x = this.nextTile.pixelX + 8;
                     this.nextTileCoord.y = this.nextTile.pixelY + 8;
                     this.isInside = false;
 
                     this.checkHeight();
-//                    this.setMode("scatter");
                 }
             } 
         }
@@ -337,10 +336,49 @@ export default class Inky extends Ghost {
             this.sprite.body.reset(this.maze.getTileAt(15, 11).pixelX, this.maze.getTileAt(15, 11).pixelY + 8);
         }
         else {
-            this.setMode("scatter");
+            if (this.scene.currentMode != "frightened" && this.scene.currentMode != "frozen") {
+                this.setMode(this.scene.currentMode);
+            }
+            else {
+                this.setMode("chase");
+            }
+            this.distance = 0;
         }
     }
 
-    
+    enterHouse() {
+        if (this.enterStarted == false) {
+            this.distance = 0;
+            this.enterStarted = true;
+            this.isInside = true;
+        }
+
+        if (this.distance < 48) {
+            this.sprite.y += 1;
+            this.animate("down");
+            this.distance += 1;
+        }
+
+        if (this.distance == 48) {
+            this.sprite.body.reset(this.maze.getTileAt(15, 14).pixelX, this.maze.getTileAt(15, 14).pixelY + 8);
+            this.distance += 1;
+        }
+        
+        if (this.distance > 48) {
+            if (this.distance <= 80) {
+                this.sprite.x -= 1;
+                this.animate("left");
+                this.distance += 1;
+            }
+            else {
+                this.distance = 0;
+                this.setMode("exit");
+            }
+        }
+    }
+
+    reset() {
+        this.animate("up");
+    }
 
 }

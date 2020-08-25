@@ -1,6 +1,8 @@
 "use strict";
 
 import MazeScene from "./maze_scene.js";
+import DeathScene from "./death_scene.js";
+import ReadyScene from "./ready_scene.js";
 
 //Set up and configure the application
 let config = {
@@ -8,7 +10,7 @@ let config = {
     width: 900,
     height: 900,
     zoom: 1.5,
-    scene: MazeScene,
+    scene: [MazeScene, DeathScene, ReadyScene],
     physics: {
         default: "arcade",
         arcade: {

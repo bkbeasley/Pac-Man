@@ -3,6 +3,11 @@ body {
     
 }
 
+@font-face {
+    font-family: "emulogic";
+    src: url(../assets/font/emulogic.ttf) format("truetype");
+}
+
 canvas {
     display: flex;
 	justify-content: center; /* center horizontally */

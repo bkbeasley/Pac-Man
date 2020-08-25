@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "frightened_01.png",
+	"frame": {"x":0,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "frightened_02.png",
+	"frame": {"x":26,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "frightened_03.png",
+	"frame": {"x":52,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "frightened_04.png",
+	"frame": {"x":78,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "frightened_anims.png",
+	"format": "RGBA8888",
+	"size": {"w":104,"h":26},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3fd66448a0f478c05608834666e70ce6:24755dc607c634d919633e99d2984bf5:1c2f0bbccdf1c20a85549fc5c70eb7a6$"
+}
+}

@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "eyes_01.png",
+	"frame": {"x":0,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "eyes_02.png",
+	"frame": {"x":26,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "eyes_03.png",
+	"frame": {"x":52,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+},
+{
+	"filename": "eyes_04.png",
+	"frame": {"x":78,"y":0,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":26},
+	"sourceSize": {"w":26,"h":26}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "eyes_anims.png",
+	"format": "RGBA8888",
+	"size": {"w":104,"h":26},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:58dc46e78186f8ef8c718bfd7468882a:625ae418e11dab55f857aeb030fcea10:e8b8a935840c42a060505fac7667a604$"
+}
+}
