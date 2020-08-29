@@ -37,6 +37,7 @@ export default class ReadyScene extends Phaser.Scene {
         this.pinky.reset();
         this.add.text(200, 272, "READY!", { fontFamily: 'emulogic, Verdana, "Times New Roman", Tahoma, serif', fontSize: "14px" }).setColor("#f6f91d");
         let audio = this.sound.add("intro_music");
+        audio.setVolume(0.4);
         
         audio.play();
     }
